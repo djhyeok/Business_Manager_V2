@@ -27,10 +27,19 @@ LRESULT CALLBACK MDIWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPar
 		g_hMDIClient = CreateWindow(TEXT("MDIClient"), NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL | WS_CLIPCHILDREN, 0, 0, 0, 0, hWnd, (HMENU)NULL, g_hInst, (LPSTR)&ccs);
 		ShowWindow(g_hMDIClient, SW_SHOW);
 
+		//DB에서 totB,totR,totP,buseo,religion,position 에 데이터 받아옴(select)
+		DBConnect();
+
+		totB = CountRecord((LPSTR)"BUSEO");
+		BaseSelectSQL((LPSTR)"BUSEO");
+		totR = CountRecord((LPSTR)"RELIGION");
+		BaseSelectSQL((LPSTR)"RELIGION");
+		totP = CountRecord((LPSTR)"POSITION");
+		BaseSelectSQL((LPSTR)"POSITION");
+
+		DBDisconnect();
+
 		//초기에 1개 사이즈로 할당
-		buseo = (BASE*)malloc(sizeof(BASE));
-		position = (BASE*)malloc(sizeof(BASE));
-		religion = (BASE*)malloc(sizeof(BASE));
 		workEmp = (EMP*)malloc(sizeof(EMP));
 		retireEmp = (RETIRE*)malloc(sizeof(RETIRE));
 		family = (FAMILY*)malloc(sizeof(FAMILY));

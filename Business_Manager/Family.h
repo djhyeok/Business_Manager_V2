@@ -6,6 +6,7 @@
 #include <CommCtrl.h>
 #include "resource.h"
 #include "Common.h"
+#include "FamilyHelper.h"
 
 LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND, UINT, WPARAM, LPARAM);		//가족사항 MDI 윈도우 프로시져
 

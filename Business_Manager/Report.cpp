@@ -29,42 +29,42 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 150;
-		COL.pszText = (LPWSTR)TEXT("사번");
+		COL.pszText = (LPSTR)TEXT("사번");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hReportEmpLV, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("사원명");
+		COL.pszText = (LPSTR)TEXT("사원명");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hReportEmpLV, 1, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 120;
-		COL.pszText = (LPWSTR)TEXT("부서");
+		COL.pszText = (LPSTR)TEXT("부서");
 		COL.iSubItem = 2;
 		ListView_InsertColumn(hReportEmpLV, 2, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("직책");
+		COL.pszText = (LPSTR)TEXT("직책");
 		COL.iSubItem = 3;
 		ListView_InsertColumn(hReportEmpLV, 3, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 180;
-		COL.pszText = (LPWSTR)TEXT("연락처");
+		COL.pszText = (LPSTR)TEXT("연락처");
 		COL.iSubItem = 4;
 		ListView_InsertColumn(hReportEmpLV, 4, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 50;
-		COL.pszText = (LPWSTR)TEXT("성별");
+		COL.pszText = (LPSTR)TEXT("성별");
 		COL.iSubItem = 5;
 		ListView_InsertColumn(hReportEmpLV, 5, &COL);
 		for (i = 0; i < totEmp; i++) {
@@ -73,15 +73,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 			LI.iSubItem = 0;
 			LI.pszText = workEmp[i].empNo;
 			ListView_InsertItem(hReportEmpLV, &LI);											//사번
-			ListView_SetItemText(hReportEmpLV, i, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-			ListView_SetItemText(hReportEmpLV, i, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-			ListView_SetItemText(hReportEmpLV, i, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-			ListView_SetItemText(hReportEmpLV, i, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+			ListView_SetItemText(hReportEmpLV, i, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+			ListView_SetItemText(hReportEmpLV, i, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+			ListView_SetItemText(hReportEmpLV, i, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+			ListView_SetItemText(hReportEmpLV, i, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 			if (workEmp[i].pInfo.pSex == TRUE) {
-				ListView_SetItemText(hReportEmpLV, i, 5, (LPWSTR)TEXT("남"));				//남
+				ListView_SetItemText(hReportEmpLV, i, 5, (LPSTR)TEXT("남"));				//남
 			}
 			else {
-				ListView_SetItemText(hReportEmpLV, i, 5, (LPWSTR)TEXT("여"));				//여
+				ListView_SetItemText(hReportEmpLV, i, 5, (LPSTR)TEXT("여"));				//여
 			}
 		}
 
@@ -229,15 +229,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 										LI.iSubItem = 0;
 										LI.pszText = workEmp[i].empNo;
 										ListView_InsertItem(hReportEmpLV, &LI);											//사번
-										ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-										ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-										ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-										ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+										ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+										ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+										ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+										ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 										if (workEmp[i].pInfo.pSex == TRUE) {
-											ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+											ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 										}
 										else {
-											ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+											ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 										}
 									}
 								}
@@ -249,15 +249,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 										LI.iSubItem = 0;
 										LI.pszText = workEmp[i].empNo;
 										ListView_InsertItem(hReportEmpLV, &LI);											//사번
-										ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-										ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-										ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-										ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+										ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+										ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+										ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+										ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 										if (workEmp[i].pInfo.pSex == TRUE) {
-											ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+											ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 										}
 										else {
-											ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+											ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 										}
 									}
 								}
@@ -272,15 +272,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -292,15 +292,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -314,15 +314,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											} 
 										}
 									}
@@ -334,15 +334,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -360,15 +360,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -380,15 +380,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -403,15 +403,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -423,15 +423,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -445,15 +445,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -465,15 +465,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -490,15 +490,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -510,15 +510,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}
@@ -533,15 +533,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -553,15 +553,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 												LI.iSubItem = 0;
 												LI.pszText = workEmp[i].empNo;
 												ListView_InsertItem(hReportEmpLV, &LI);											//사번
-												ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-												ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-												ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-												ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+												ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+												ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+												ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+												ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 												if (workEmp[i].pInfo.pSex == TRUE) {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 												}
 												else {
-													ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+													ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 												}
 											}
 										}
@@ -576,15 +576,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 													LI.iSubItem = 0;
 													LI.pszText = workEmp[i].empNo;
 													ListView_InsertItem(hReportEmpLV, &LI);											//사번
-													ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-													ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-													ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-													ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+													ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+													ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+													ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+													ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 													if (workEmp[i].pInfo.pSex == TRUE) {
-														ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+														ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 													}
 													else {
-														ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+														ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 													}
 												}
 											}
@@ -596,15 +596,15 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 											LI.iSubItem = 0;
 											LI.pszText = workEmp[i].empNo;
 											ListView_InsertItem(hReportEmpLV, &LI);											//사번
-											ListView_SetItemText(hReportEmpLV, j, 1, (LPWSTR)workEmp[i].pInfo.pName[0]);	//이름
-											ListView_SetItemText(hReportEmpLV, j, 2, (LPWSTR)workEmp[i].empBuseo);			//부서
-											ListView_SetItemText(hReportEmpLV, j, 3, (LPWSTR)workEmp[i].empPosCode);		//직책
-											ListView_SetItemText(hReportEmpLV, j, 4, (LPWSTR)workEmp[i].pInfo.pPhone);		//연락처
+											ListView_SetItemText(hReportEmpLV, j, 1, (LPSTR)workEmp[i].pInfo.pName[0]);	//이름
+											ListView_SetItemText(hReportEmpLV, j, 2, (LPSTR)workEmp[i].empBuseo);			//부서
+											ListView_SetItemText(hReportEmpLV, j, 3, (LPSTR)workEmp[i].empPosCode);		//직책
+											ListView_SetItemText(hReportEmpLV, j, 4, (LPSTR)workEmp[i].pInfo.pPhone);		//연락처
 											if (workEmp[i].pInfo.pSex == TRUE) {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("남"));				//남
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("남"));				//남
 											}
 											else {
-												ListView_SetItemText(hReportEmpLV, j, 5, (LPWSTR)TEXT("여"));				//여
+												ListView_SetItemText(hReportEmpLV, j, 5, (LPSTR)TEXT("여"));				//여
 											}
 										}
 									}

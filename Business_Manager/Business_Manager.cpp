@@ -21,6 +21,9 @@ BASE* religion;		//종교
 EMP* workEmp;		//사원
 RETIRE* retireEmp;	//퇴직완료사원
 FAMILY* family;		//사원가족
+SQLHENV hEnv;
+SQLHDBC hDbc;
+SQLHSTMT hStmt;
 
 //인사관리 프로그램
 

@@ -6,6 +6,9 @@
 #include <CommCtrl.h>
 #include "Common.h"
 #include "resource.h"
+#include "DBHelper.h"
+#include "BaseHelper.h"
+#include "EmpHelper.h"
 
 LRESULT CALLBACK InitEMPMDIProc(HWND, UINT, WPARAM, LPARAM);	//사원 MDI 윈도우 프로시져
 

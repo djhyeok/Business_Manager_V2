@@ -43,7 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -108,7 +108,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,22 +129,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
+    <ClCompile Include="BaseHelper.cpp" />
     <ClCompile Include="Business_Manager.cpp" />
+    <ClCompile Include="DBHelper.cpp" />
+    <ClCompile Include="EmpHelper.cpp" />
     <ClCompile Include="Family.cpp" />
+    <ClCompile Include="FamilyHelper.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Frame.h" />
     <ClCompile Include="Emp.cpp" />
     <ClCompile Include="Report.cpp" />
     <ClCompile Include="RetireEmp.cpp" />
+    <ClCompile Include="RetireHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
+    <ClInclude Include="BaseHelper.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="DBHelper.h" />
     <ClInclude Include="Emp.h" />
+    <ClInclude Include="EmpHelper.h" />
     <ClInclude Include="Family.h" />
+    <ClInclude Include="FamilyHelper.h" />
     <ClInclude Include="Report.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RetireEmp.h" />
+    <ClInclude Include="RetireHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Business_Manager.rc" />

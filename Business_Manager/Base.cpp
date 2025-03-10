@@ -1,6 +1,10 @@
 #include "Base.h";
-
+/*
+WM_CREATE에서 select문 한번날리고 그 이후는 구조체로 관리
+삽입 수정 삭제는 DB반영
+*/
 extern HINSTANCE g_hInst;
+HWND hWndBase;
 HWND hBuseoList;			//부서리스트뷰 핸들
 HWND hBCode;				//부서코드에디트윈도우 핸들
 HWND hBName;				//부서이름에디트윈도우 핸들
@@ -30,6 +34,8 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 
 	switch (iMessage) {
 	case WM_CREATE:
+		hWndBase = hWnd;
+
 		//리스트뷰 생성
 		hBuseoList = CreateWindow(WC_LISTVIEW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SHOWSELALWAYS, 50, 10, 200, 300, hWnd, (HMENU)ID_BLIST, g_hInst, NULL);
 
@@ -37,16 +43,17 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("부서코드");
+		COL.pszText = (LPSTR)TEXT("부서코드");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hBuseoList, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("부서명");
+		COL.pszText = (LPSTR)TEXT("부서명");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hBuseoList, 1, &COL);
+		ListView_SetExtendedListViewStyle(hBuseoList, LVS_EX_FULLROWSELECT);
 		//리스트뷰에 부서 채우기
 		for (i = 0; i < totB; i++) {
 			LI.mask = LVIF_TEXT;
@@ -54,7 +61,7 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 			LI.iSubItem = 0;
 			LI.pszText = buseo[i].code;
 			ListView_InsertItem(hBuseoList, &LI);
-			ListView_SetItemText(hBuseoList, i, 1, (LPWSTR)buseo[i].name);
+			ListView_SetItemText(hBuseoList, i, 1, (LPSTR)buseo[i].name);
 		}
 		//부서코드 edit생성
 		hBCode = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, 370, 150, 70, 25, hWnd, (HMENU)ID_CODE, g_hInst, NULL);
@@ -96,7 +103,13 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 				buseo[totB] = tempBase;
 				totB++;		//부서갯수++
 
-				ListView_DeleteAllItems(hBuseoList);		//리스트뷰 비움
+				//DB에 입력받은 tempBase 데이터 삽입
+				DBConnect();
+				BaseInsertSQL((LPSTR)"BUSEO", tempBase);
+				DBDisconnect();
+
+				//리스트뷰 비움
+				ListView_DeleteAllItems(hBuseoList);
 
 				//리스트뷰에 다시 있는값 채우기
 				for (i = 0; i < totB; i++) {
@@ -105,7 +118,7 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 					LI.iSubItem = 0;
 					LI.pszText = buseo[i].code;
 					ListView_InsertItem(hBuseoList, &LI);
-					ListView_SetItemText(hBuseoList, i, 1, (LPWSTR)buseo[i].name);
+					ListView_SetItemText(hBuseoList, i, 1, (LPSTR)buseo[i].name);
 				}
 			}
 			else {
@@ -147,11 +160,17 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 					isDup = FALSE;
 				}
 				else {
+					//DB에 쿼리 보내서 update문 실행
+					DBConnect();
+					BaseUpdateSQL((LPSTR)"BUSEO", buseo[ind].code, tempBase);
+					DBDisconnect();
+
 					//ind번째 buseo의 값을 바꿈
 					buseo[ind] = tempBase;
 
 					//리스트뷰 비우고 다시채움
 					ListView_DeleteAllItems(hBuseoList);
+
 
 					for (i = 0; i < totB; i++) {
 						LI.mask = LVIF_TEXT;
@@ -159,7 +178,7 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 						LI.iSubItem = 0;
 						LI.pszText = buseo[i].code;
 						ListView_InsertItem(hBuseoList, &LI);
-						ListView_SetItemText(hBuseoList, i, 1, (LPWSTR)buseo[i].name);
+						ListView_SetItemText(hBuseoList, i, 1, (LPSTR)buseo[i].name);
 					}
 				}
 			}
@@ -169,13 +188,18 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 			SetWindowText(hBName, TEXT(""));
 
 			break;
-		case IDC_DEL:
+		case IDC_DEL:		//삭제버튼
 			ind = ListView_GetNextItem(hBuseoList, -1, LVNI_ALL | LVNI_SELECTED);
 			if (ind == -1) {
 				MessageBox(hWnd, TEXT("삭제할 항목을 먼저 선택하십시오"), TEXT("알림"), MB_OK);
 			}
 			else {
 				ListView_DeleteItem(hBuseoList, ind);		//리스트뷰 아이템 지움
+
+				//DB에서 해당 데이터 삭제
+				DBConnect();
+				BaseDeleteSQL((LPSTR)"BUSEO", buseo[ind].code);
+				DBDisconnect();
 
 				for (i = ind; i < totB - 1; i++) {
 					buseo[i] = buseo[i + 1];
@@ -211,8 +235,8 @@ LRESULT CALLBACK InitBuseoMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARA
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		SetBkMode(hdc, TRANSPARENT);
-		TextOut(hdc, 300, 155, TEXT("부서코드"), 4);
-		TextOut(hdc, 450, 155, TEXT("부서이름"), 4);
+		TextOut(hdc, 300, 155, TEXT("코드"), 4);
+		TextOut(hdc, 450, 155, TEXT("이름"), 4);
 		EndPaint(hWnd, &ps);
 		return 0;
 	}
@@ -237,16 +261,17 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("종교코드");
+		COL.pszText = (LPSTR)TEXT("종교코드");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hReligionList, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("종교명");
+		COL.pszText = (LPSTR)TEXT("종교명");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hReligionList, 1, &COL);
+		ListView_SetExtendedListViewStyle(hReligionList, LVS_EX_FULLROWSELECT);
 
 		//리스트뷰에 종교 채우기
 		for (i = 0; i < totR; i++) {
@@ -255,7 +280,7 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 			LI.iSubItem = 0;
 			LI.pszText = religion[i].code;
 			ListView_InsertItem(hReligionList, &LI);
-			ListView_SetItemText(hReligionList, i, 1, (LPWSTR)religion[i].name);
+			ListView_SetItemText(hReligionList, i, 1, (LPSTR)religion[i].name);
 		}
 
 		//종교코드 edit생성
@@ -298,6 +323,11 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 
 				ListView_DeleteAllItems(hReligionList);		//리스트뷰 비움
 
+				//DB에 입력받은 tempBase 데이터 삽입
+				DBConnect();
+				BaseInsertSQL((LPSTR)"RELIGION", tempBase);
+				DBDisconnect();
+
 				//리스트뷰에 다시 있는값 채우기
 				for (i = 0; i < totR; i++) {
 					LI.mask = LVIF_TEXT;
@@ -305,7 +335,7 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 					LI.iSubItem = 0;
 					LI.pszText = religion[i].code;
 					ListView_InsertItem(hReligionList, &LI);
-					ListView_SetItemText(hReligionList, i, 1, (LPWSTR)religion[i].name);
+					ListView_SetItemText(hReligionList, i, 1, (LPSTR)religion[i].name);
 				}
 			}
 			else {
@@ -348,6 +378,11 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 					isDup = FALSE;
 				}
 				else {
+					//DB에 쿼리 보내서 update문 실행
+					DBConnect();
+					BaseUpdateSQL((LPSTR)"RELIGION", religion[ind].code, tempBase);
+					DBDisconnect();
+
 					//ind번째 religion의 값을 바꿈
 					religion[ind] = tempBase;
 
@@ -360,7 +395,7 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 						LI.iSubItem = 0;
 						LI.pszText = religion[i].code;
 						ListView_InsertItem(hReligionList, &LI);
-						ListView_SetItemText(hReligionList, i, 1, (LPWSTR)religion[i].name);
+						ListView_SetItemText(hReligionList, i, 1, (LPSTR)religion[i].name);
 					}
 				}
 			}
@@ -377,6 +412,11 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 			}
 			else {
 				ListView_DeleteItem(hReligionList, ind);		//리스트뷰 아이템 지움
+
+				//DB에서 해당 데이터 삭제
+				DBConnect();
+				BaseDeleteSQL((LPSTR)"RELIGION", religion[ind].code);
+				DBDisconnect();
 
 				for (i = ind; i < totR - 1; i++) {
 					religion[i] = religion[i + 1];
@@ -412,8 +452,8 @@ LRESULT CALLBACK InitReligionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		SetBkMode(hdc, TRANSPARENT);
-		TextOut(hdc, 300, 155, TEXT("종교코드"), 4);
-		TextOut(hdc, 450, 155, TEXT("종교이름"), 4);
+		TextOut(hdc, 300, 155, TEXT("코드"), 4);
+		TextOut(hdc, 450, 155, TEXT("이름"), 4);
 		EndPaint(hWnd, &ps);
 		return 0;
 	}
@@ -438,16 +478,17 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("직위코드");
+		COL.pszText = (LPSTR)TEXT("직위코드");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hPositionList, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 100;
-		COL.pszText = (LPWSTR)TEXT("직위명");
+		COL.pszText = (LPSTR)TEXT("직위명");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hPositionList, 1, &COL);
+		ListView_SetExtendedListViewStyle(hPositionList, LVS_EX_FULLROWSELECT);
 		//리스트뷰에 종교 채우기
 		for (i = 0; i < totP; i++) {
 			LI.mask = LVIF_TEXT;
@@ -455,7 +496,7 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 			LI.iSubItem = 0;
 			LI.pszText = position[i].code;
 			ListView_InsertItem(hPositionList, &LI);
-			ListView_SetItemText(hPositionList, i, 1, (LPWSTR)position[i].name);
+			ListView_SetItemText(hPositionList, i, 1, (LPSTR)position[i].name);
 		}
 		//직위코드 edit생성
 		hPCode = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, 370, 150, 70, 25, hWnd, (HMENU)ID_CODE, g_hInst, NULL);
@@ -497,6 +538,11 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 
 				ListView_DeleteAllItems(hPositionList);		//리스트뷰 비움
 
+				//DB에 입력받은 tempBase 데이터 삽입
+				DBConnect();
+				BaseInsertSQL((LPSTR)"POSITION", tempBase);
+				DBDisconnect();
+
 				//리스트뷰에 다시 있는값 채우기
 				for (i = 0; i < totP; i++) {
 					LI.mask = LVIF_TEXT;
@@ -504,7 +550,7 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 					LI.iSubItem = 0;
 					LI.pszText = position[i].code;
 					ListView_InsertItem(hPositionList, &LI);
-					ListView_SetItemText(hPositionList, i, 1, (LPWSTR)position[i].name);
+					ListView_SetItemText(hPositionList, i, 1, (LPSTR)position[i].name);
 				}
 			}
 			else {
@@ -548,6 +594,11 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 					isDup = FALSE;
 				}
 				else {
+					//DB에 쿼리 보내서 update문 실행
+					DBConnect();
+					BaseUpdateSQL((LPSTR)"POSITION", position[ind].code, tempBase);
+					DBDisconnect();
+
 					//ind번째 position의 값들을 바꿈
 					position[ind] = tempBase;
 
@@ -560,7 +611,7 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 						LI.iSubItem = 0;
 						LI.pszText = position[i].code;
 						ListView_InsertItem(hPositionList, &LI);
-						ListView_SetItemText(hPositionList, i, 1, (LPWSTR)position[i].name);
+						ListView_SetItemText(hPositionList, i, 1, (LPSTR)position[i].name);
 					}
 				}
 			}
@@ -577,6 +628,11 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 			}
 			else {
 				ListView_DeleteItem(hPositionList, ind);		//리스트뷰 아이템 지움
+
+				//DB에서 해당 데이터 삭제
+				DBConnect();
+				BaseDeleteSQL((LPSTR)"POSITION", position[ind].code);
+				DBDisconnect();
 
 				for (i = ind; i < totP - 1; i++) {
 					position[i] = position[i + 1];
@@ -613,8 +669,8 @@ LRESULT CALLBACK InitPositionMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		SetBkMode(hdc, TRANSPARENT);
-		TextOut(hdc, 300, 155, TEXT("직위코드"), 4);
-		TextOut(hdc, 450, 155, TEXT("직위이름"), 4);
+		TextOut(hdc, 300, 155, TEXT("코드"), 4);
+		TextOut(hdc, 450, 155, TEXT("이름"), 4);
 		EndPaint(hWnd, &ps);
 		return 0;
 	}

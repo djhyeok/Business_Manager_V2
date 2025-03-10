@@ -1,5 +1,7 @@
 #include "RetireEmp.h"
-
+/*
+모든 데이터처리를 DB에서 함 구조체로 관리하지 않음
+*/
 extern HINSTANCE g_hInst;
 extern int totB;			//부서갯수
 extern int totP;			//직위갯수
@@ -44,28 +46,28 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 150;
-		COL.pszText = (LPWSTR)TEXT("사원번호");
+		COL.pszText = (LPSTR)TEXT("사원번호");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hRetReqEMPList, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 50;
-		COL.pszText = (LPWSTR)TEXT("부서");
+		COL.pszText = (LPSTR)TEXT("부서");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hRetReqEMPList, 1, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 60;
-		COL.pszText = (LPWSTR)TEXT("직책");
+		COL.pszText = (LPSTR)TEXT("직책");
 		COL.iSubItem = 2;
 		ListView_InsertColumn(hRetReqEMPList, 2, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 80;
-		COL.pszText = (LPWSTR)TEXT("이름");
+		COL.pszText = (LPSTR)TEXT("이름");
 		COL.iSubItem = 3;
 		ListView_InsertColumn(hRetReqEMPList, 3, &COL);
 
@@ -73,42 +75,42 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 150;
-		COL.pszText = (LPWSTR)TEXT("사원번호");
+		COL.pszText = (LPSTR)TEXT("사원번호");
 		COL.iSubItem = 0;
 		ListView_InsertColumn(hRetEMPList, 0, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 50;
-		COL.pszText = (LPWSTR)TEXT("부서");
+		COL.pszText = (LPSTR)TEXT("부서");
 		COL.iSubItem = 1;
 		ListView_InsertColumn(hRetEMPList, 1, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 60;
-		COL.pszText = (LPWSTR)TEXT("직책");
+		COL.pszText = (LPSTR)TEXT("직책");
 		COL.iSubItem = 2;
 		ListView_InsertColumn(hRetEMPList, 2, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 80;
-		COL.pszText = (LPWSTR)TEXT("이름");
+		COL.pszText = (LPSTR)TEXT("이름");
 		COL.iSubItem = 3;
 		ListView_InsertColumn(hRetEMPList, 3, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 130;
-		COL.pszText = (LPWSTR)TEXT("퇴직사유");
+		COL.pszText = (LPSTR)TEXT("퇴직사유");
 		COL.iSubItem = 4;
 		ListView_InsertColumn(hRetEMPList, 4, &COL);
 
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		COL.fmt = LVCFMT_LEFT;
 		COL.cx = 130;
-		COL.pszText = (LPWSTR)TEXT("연락처");
+		COL.pszText = (LPSTR)TEXT("연락처");
 		COL.iSubItem = 5;
 		ListView_InsertColumn(hRetEMPList, 5, &COL);
 
@@ -136,9 +138,9 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				LI.iSubItem = 0;
 				LI.pszText = workEmp[i].empNo;
 				ListView_InsertItem(hRetReqEMPList, &LI);
-				ListView_SetItemText(hRetReqEMPList, j, 1, (LPWSTR)workEmp[i].empBuseo);	//부서
-				ListView_SetItemText(hRetReqEMPList, j, 2, (LPWSTR)workEmp[i].empPosCode);//직책
-				ListView_SetItemText(hRetReqEMPList, j, 3, (LPWSTR)workEmp[i].pInfo.pName[0]);//한글이름
+				ListView_SetItemText(hRetReqEMPList, j, 1, (LPSTR)workEmp[i].empBuseo);	//부서
+				ListView_SetItemText(hRetReqEMPList, j, 2, (LPSTR)workEmp[i].empPosCode);//직책
+				ListView_SetItemText(hRetReqEMPList, j, 3, (LPSTR)workEmp[i].pInfo.pName[0]);//한글이름
 				j++;
 			}
 		}
@@ -149,11 +151,11 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 			LI.iSubItem = 0;
 			LI.pszText = retireEmp[i].empNo;
 			ListView_InsertItem(hRetEMPList, &LI);												//사원번호
-			ListView_SetItemText(hRetEMPList, j, 1, (LPWSTR)retireEmp[i].empBuseo);				//부서
-			ListView_SetItemText(hRetEMPList, j, 2, (LPWSTR)retireEmp[i].empPoscode);			//직책
-			ListView_SetItemText(hRetEMPList, j, 3, (LPWSTR)retireEmp[i].empName);				//이름
-			ListView_SetItemText(hRetEMPList, j, 4, (LPWSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
-			ListView_SetItemText(hRetEMPList, j, 5, (LPWSTR)retireEmp[i].empPhone);				//연락처
+			ListView_SetItemText(hRetEMPList, j, 1, (LPSTR)retireEmp[i].empBuseo);				//부서
+			ListView_SetItemText(hRetEMPList, j, 2, (LPSTR)retireEmp[i].empPoscode);			//직책
+			ListView_SetItemText(hRetEMPList, j, 3, (LPSTR)retireEmp[i].empName);				//이름
+			ListView_SetItemText(hRetEMPList, j, 4, (LPSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
+			ListView_SetItemText(hRetEMPList, j, 5, (LPSTR)retireEmp[i].empPhone);				//연락처
 		}
 		return 0;
 	case WM_COMMAND:
@@ -209,9 +211,9 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 						LI.iSubItem = 0;
 						LI.pszText = workEmp[i].empNo;
 						ListView_InsertItem(hRetReqEMPList, &LI);
-						ListView_SetItemText(hRetReqEMPList, j, 1, (LPWSTR)workEmp[i].empBuseo);		//부서
-						ListView_SetItemText(hRetReqEMPList, j, 2, (LPWSTR)workEmp[i].empPosCode);		//직책
-						ListView_SetItemText(hRetReqEMPList, j, 3, (LPWSTR)workEmp[i].pInfo.pName[0]);	//한글이름
+						ListView_SetItemText(hRetReqEMPList, j, 1, (LPSTR)workEmp[i].empBuseo);		//부서
+						ListView_SetItemText(hRetReqEMPList, j, 2, (LPSTR)workEmp[i].empPosCode);		//직책
+						ListView_SetItemText(hRetReqEMPList, j, 3, (LPSTR)workEmp[i].pInfo.pName[0]);	//한글이름
 						j++;
 					}
 				}
@@ -222,11 +224,11 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 					LI.iSubItem = 0;
 					LI.pszText = retireEmp[i].empNo;
 					ListView_InsertItem(hRetEMPList, &LI);												//사원번호
-					ListView_SetItemText(hRetEMPList, j, 1, (LPWSTR)retireEmp[i].empBuseo);				//부서
-					ListView_SetItemText(hRetEMPList, j, 2, (LPWSTR)retireEmp[i].empPoscode);			//직책
-					ListView_SetItemText(hRetEMPList, j, 3, (LPWSTR)retireEmp[i].empName);				//이름
-					ListView_SetItemText(hRetEMPList, j, 4, (LPWSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
-					ListView_SetItemText(hRetEMPList, j, 5, (LPWSTR)retireEmp[i].empPhone);				//연락처
+					ListView_SetItemText(hRetEMPList, j, 1, (LPSTR)retireEmp[i].empBuseo);				//부서
+					ListView_SetItemText(hRetEMPList, j, 2, (LPSTR)retireEmp[i].empPoscode);			//직책
+					ListView_SetItemText(hRetEMPList, j, 3, (LPSTR)retireEmp[i].empName);				//이름
+					ListView_SetItemText(hRetEMPList, j, 4, (LPSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
+					ListView_SetItemText(hRetEMPList, j, 5, (LPSTR)retireEmp[i].empPhone);				//연락처
 				}
 				tempRet.retireReason = -1;
 			}

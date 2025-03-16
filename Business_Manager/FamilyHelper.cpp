@@ -4,12 +4,7 @@ extern HINSTANCE g_hInst;
 extern SQLHENV hEnv;
 extern SQLHDBC hDbc;
 extern SQLHSTMT hStmt;
-extern HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert;
-HWND hwndnd;
-enum {
-	ID_EMPLV, ID_FAMLV, ID_EMPNAME, ID_FAMNAME, ID_FAMAGE, ID_FAMREL, ID_FAMJOB,
-	ID_FAMINSERT, ID_FAMMODIFY, ID_FAMDELETE, ID_COMPLETE
-};
+extern HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert, hFamEmpno, hEmpno, hFindBtn;
 
 /*
 BOOL SelectEMP(): 리스트뷰에 사원정보 채움
@@ -71,8 +66,7 @@ BOOL InsertFamily(FAMILY fam) {
 	else {
 		SQLLEN Imax;
 		SQLBindCol(hStmt, 1, SQL_C_ULONG, &max, 0, &Imax);				//인덱스 최댓값 바인딩
-		wsprintf(Q, "SELECT MAX(IDX) FROM FAMILYMEMBER", fam.empNo);
-		if (SQLExecDirect(hStmt, (SQLCHAR*)Q, SQL_NTS) != SQL_SUCCESS) {
+		if (SQLExecDirect(hStmt, (SQLCHAR*)"SELECT MAX(IDX) FROM FAMILYMEMBER", SQL_NTS) != SQL_SUCCESS) {
 			return FALSE;
 		}
 		SQLFetch(hStmt);

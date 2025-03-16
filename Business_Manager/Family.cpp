@@ -5,16 +5,14 @@ extern int totEmp;			//사원수
 extern EMP* workEmp;		//사원
 extern FAMILY* family;		//사원가족
 extern int totFamily;		//전체사원가족수
-
-HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert, hFamEmpno;
+HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert, hFamEmpno, hEmpno, hFindBtn;
 enum {
 	ID_EMPLV, ID_FAMLV, ID_EMPNAME, ID_FAMNAME, ID_FAMAGE, ID_FAMREL, ID_FAMJOB,
-	ID_FAMINSERT, ID_FAMMODIFY, ID_FAMDELETE, ID_COMPLETE, ID_FAMEMPNO
+	ID_FAMINSERT, ID_FAMMODIFY, ID_FAMDELETE, ID_REFRESH, ID_FAMEMPNO, ID_FINDEMPNO, ID_FIND
 };
 
 LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	LVCOLUMN COL;
-	LVITEM LI;
 	INITCOMMONCONTROLSEX icex;
 	HDC hdc;
 	PAINTSTRUCT ps;
@@ -95,6 +93,12 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		COL.iSubItem = 3;
 		ListView_InsertColumn(hFamilyLV, 3, &COL);
 
+		//사번검색 edit 컨트롤
+		hEmpno = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
+			135, 570, 150, 25, hWnd, (HMENU)ID_FINDEMPNO, g_hInst, NULL);
+		//사번검색 버튼
+		hFindBtn = CreateWindow(TEXT("button"), TEXT("사번검색"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			300, 570, 100, 25, hWnd, (HMENU)ID_FIND, g_hInst, NULL);
 		//사원명 static 컨트롤
 		hEmpName = CreateWindow(TEXT("static"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
 			700, 29, 60, 22, hWnd, (HMENU)ID_EMPNAME, g_hInst, NULL);
@@ -125,9 +129,9 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		//부양가족삭제 버튼
 		CreateWindow(TEXT("button"), TEXT("삭제"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			600, 235, 50, 25, hWnd, (HMENU)ID_FAMDELETE, g_hInst, NULL);
-		//부양가족없음 버튼
+		//부양가족정보 다시입력 버튼
 		CreateWindow(TEXT("button"), TEXT("다시입력"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			490, 265, 160, 25, hWnd, (HMENU)ID_COMPLETE, g_hInst, NULL);
+			490, 265, 160, 25, hWnd, (HMENU)ID_REFRESH, g_hInst, NULL);
 
 		//리스트뷰에 사원정보 채우기
 		//사원번호,직책,부서,이름
@@ -137,8 +141,27 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
+		case ID_FIND:
+			int idx;
+			LVFINDINFO fi;
+			//검색할 사번 str에 담음
+			GetWindowText(hEmpno, str, 255);
+			//str을 hEmpLV에서 찾음
+			fi.flags = LVFI_STRING;
+			fi.psz = str;
+			fi.vkDirection = VK_DOWN;
+			idx = ListView_FindItem(hEmpLV, -1, &fi);
+			if (idx == -1) {
+				MessageBox(hWnd, "해당 사번의 사원이 존재하지 않습니다.", NULL, MB_OK);
+			}
+			else {
+				ListView_SetItemState(hEmpLV, -1, 0, LVIS_FOCUSED | LVIS_SELECTED);
+				ListView_SetItemState(hEmpLV, idx, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+				ListView_EnsureVisible(hEmpLV, idx, FALSE);
+			}
+			break;
 		case ID_FAMINSERT:		//추가버튼
-			GetWindowText(hFamEmpno, tempFam.empNo, 13);
+			GetWindowText(hFamEmpno, tempFam.empNo, 12);
 			if (lstrlen(tempFam.empNo) == 0) {
 				MessageBox(hWnd, TEXT("사원 선택 후 가족사항을 추가하세요"), TEXT("삽입 오류"), MB_OK);
 			}
@@ -156,7 +179,7 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 						ListView_GetItemText(hFamilyLV, i, 0, str, 255);
 						if (lstrcmp(tempFam.name, str) == 0) {
 							MessageBox(hWnd, TEXT("이름이 동일한 가족은 추가할 수 없습니다."), NULL, MB_OK);
-							SetWindowText(hFamName,TEXT(""));
+							SetWindowText(hFamName, TEXT(""));
 							lstrcpy(tempFam.name, TEXT(""));
 							break;
 						}
@@ -172,7 +195,7 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 							break;
 						}
 					}
-					if (lstrlen(tempFam.relation)&&lstrlen(tempFam.name)) {
+					if (lstrlen(tempFam.relation) && lstrlen(tempFam.name)) {
 						DBConnect();
 						InsertFamily(tempFam);
 						SelectFamily(tempFam.empNo);
@@ -249,7 +272,7 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
 			}
 			break;
-		case ID_COMPLETE:		//다시입력버튼
+		case ID_REFRESH:		//다시입력버튼
 			//입력 컨트롤 빈칸으로 초기화
 			SetWindowText(hFamName, TEXT(""));
 			SetWindowText(hFamAge, TEXT(""));

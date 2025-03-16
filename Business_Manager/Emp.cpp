@@ -40,36 +40,6 @@ LRESULT CALLBACK InitEMPMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM 
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case ID_BUSEO:						//부서 콤보박스의 값 임시 구조체tempEmp에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				SendMessage(hEmpBuseo, CB_GETLBTEXT, SendMessage(hEmpBuseo, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.empBuseo);
-				DBConnect();
-				lstrcpy(tempEmp.empBuseo, Name2Code((LPSTR)"BUSEO", (LPSTR)tempEmp.empBuseo));
-				DBDisconnect();
-				break;
-			}
-			break;
-		case ID_RELLIGION:					//종교 콤보박스의 값 임시 구조체tempEmp에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				SendMessage(hEmpReligion, CB_GETLBTEXT, SendMessage(hEmpReligion, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.pInfo.pReligion);
-				DBConnect();
-				lstrcpy(tempEmp.pInfo.pReligion, Name2Code((LPSTR)"RELIGION", (LPSTR)tempEmp.pInfo.pReligion));
-				DBDisconnect();
-				break;
-			}
-			break;
-		case ID_POSCODE:					//직책 콤보박스의 값 임시 구조체tempEmp에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				SendMessage(hEmpPoscode, CB_GETLBTEXT, SendMessage(hEmpPoscode, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.empPosCode);
-				DBConnect();
-				lstrcpy(tempEmp.empPosCode, Name2Code((LPSTR)"POSITION", (LPSTR)tempEmp.empPosCode));
-				DBDisconnect();
-				break;
-			}
-			break;
 		case IDC_INSERT:			//삽입 버튼
 			if (SendMessage(hEmpIndate, DTM_GETSYSTEMTIME, 0, (LPARAM)&st) == GDT_VALID) {
 				tempEmp.empStartYear = st;														//입사일
@@ -101,6 +71,15 @@ LRESULT CALLBACK InitEMPMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM 
 			}
 			GetWindowText(hEmpLefteye, tempEmp.pInfo.pPhysical[2], 11);			//시력(좌)
 			GetWindowText(hEmpRighteye, tempEmp.pInfo.pPhysical[3], 11);		//시력(우)
+			DBConnect();
+			num = CountRecord((LPSTR)"EMP");
+			SendMessage(hEmpBuseo, CB_GETLBTEXT, SendMessage(hEmpBuseo, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.empBuseo);					//부서
+			lstrcpy(tempEmp.empBuseo, Name2Code((LPSTR)"BUSEO", (LPSTR)tempEmp.empBuseo));
+			SendMessage(hEmpReligion, CB_GETLBTEXT, SendMessage(hEmpReligion, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.pInfo.pReligion);	//종교
+			lstrcpy(tempEmp.pInfo.pReligion, Name2Code((LPSTR)"RELIGION", (LPSTR)tempEmp.pInfo.pReligion));
+			SendMessage(hEmpPoscode, CB_GETLBTEXT, SendMessage(hEmpPoscode, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.empPosCode);			//직책
+			lstrcpy(tempEmp.empPosCode, Name2Code((LPSTR)"POSITION", (LPSTR)tempEmp.empPosCode));
+			DBDisconnect();
 			//근무여부 초기화
 			tempEmp.empRetire = 0;
 			//사원번호생성
@@ -112,9 +91,6 @@ LRESULT CALLBACK InitEMPMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM 
 			else {
 				lstrcat(tempEmp.empNo, TEXT("2"));
 			}
-			DBConnect();
-			num = CountRecord((LPSTR)"EMP");
-			DBDisconnect();
 			cal = num + 1;
 			wsprintf(str, TEXT("%d"), cal / 1000);
 			lstrcat(tempEmp.empNo, str);

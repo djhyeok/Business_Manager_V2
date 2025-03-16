@@ -8,6 +8,10 @@
 #include "DBHelper.h"
 
 BOOL SelectEMP();
-BOOL SelectFamily();
+BOOL InsertFamily(FAMILY);
+BOOL SelectFamily(LPSTR);
+int GetFamilyIndex(LPSTR, LPSTR);
+BOOL UpdateFamily(int, FAMILY);
+BOOL DeleteFamily(int);
 
 #endif

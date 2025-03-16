@@ -1,9 +1,5 @@
 #include "Family.h"
-/*
-아직안함
-WM_CREATE에서 select문 날려서 DB데이터 불러옴
-삽입 수정 삭제 후 DB에서 다시 select해서 LV에 뿌림
-*/
+
 extern HINSTANCE g_hInst;
 extern int totEmp;			//사원수
 extern EMP* workEmp;		//사원
@@ -15,11 +11,7 @@ enum {
 	ID_EMPLV, ID_FAMLV, ID_EMPNAME, ID_FAMNAME, ID_FAMAGE, ID_FAMREL, ID_FAMJOB,
 	ID_FAMINSERT, ID_FAMMODIFY, ID_FAMDELETE, ID_COMPLETE, ID_FAMEMPNO
 };
-/*
-	가족사항등록
-	-등본상 동거인들
-	부,모,조부,조모 등 한명만 있어야하는 것 예외처리
-*/
+
 LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	LVCOLUMN COL;
 	LVITEM LI;
@@ -40,8 +32,10 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		//사원, 가족사항 리스트뷰 생성
 		hEmpLV = CreateWindow(WC_LISTVIEW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SHOWSELALWAYS,
 			100, 60, 340, 500, hWnd, (HMENU)ID_EMPLV, g_hInst, NULL);
+		ListView_SetExtendedListViewStyle(hEmpLV, LVS_EX_FULLROWSELECT);
 		hFamilyLV = CreateWindow(WC_LISTVIEW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SHOWSELALWAYS,
 			700, 60, 320, 500, hWnd, (HMENU)ID_FAMLV, g_hInst, NULL);
+		ListView_SetExtendedListViewStyle(hFamilyLV, LVS_EX_FULLROWSELECT);
 
 		//사원 리스트뷰에 헤더추가
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -109,13 +103,13 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		//사원가족사항 정보입력 컨트롤
 		hFamName = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
 			540, 78, 100, 25, hWnd, (HMENU)ID_FAMNAME, g_hInst, NULL);
+		hFamAge = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
+			540, 118, 100, 25, hWnd, (HMENU)ID_FAMAGE, g_hInst, NULL);
 		hFamRel = CreateWindow(TEXT("combobox"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_DROPDOWNLIST,
-			540, 118, 100, 175, hWnd, (HMENU)ID_FAMREL, g_hInst, NULL);
+			540, 158, 100, 175, hWnd, (HMENU)ID_FAMREL, g_hInst, NULL);
 		for (i = 0; i < 8; i++) {
 			SendMessage(hFamRel, CB_ADDSTRING, 0, (LPARAM)famRelation[i]);
 		}
-		hFamAge = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-			540, 158, 100, 25, hWnd, (HMENU)ID_FAMAGE, g_hInst, NULL);
 		hFamJob = CreateWindow(TEXT("combobox"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_DROPDOWNLIST,
 			540, 198, 100, 125, hWnd, (HMENU)ID_FAMJOB, g_hInst, NULL);
 		for (i = 0; i < 6; i++) {
@@ -143,56 +137,50 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case ID_FAMJOB:			//가족 직업 콤보박스
-			//직업 콤보박스의 값 임시 구조체tempFam에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				i = SendMessage(hFamJob, CB_GETCURSEL, 0, 0);
-				SendMessage(hFamJob, CB_GETLBTEXT, i, (LPARAM)tempFam.job);
-				break;
-			}
-			break;
-		case ID_FAMREL:			//가족 관계 콤보박스
-			//관계 콤보박스의 값 임시 구조체tempFam에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				i = SendMessage(hFamRel, CB_GETCURSEL, 0, 0);
-				SendMessage(hFamRel, CB_GETLBTEXT, i, (LPARAM)tempFam.relation);
-				break;
-			}
-			break;
 		case ID_FAMINSERT:		//추가버튼
-			GetWindowText(hFamEmpno, str, 255);
-			if (lstrlen(str) != 0) {
+			GetWindowText(hFamEmpno, tempFam.empNo, 13);
+			if (lstrlen(tempFam.empNo) == 0) {
 				MessageBox(hWnd, TEXT("사원 선택 후 가족사항을 추가하세요"), TEXT("삽입 오류"), MB_OK);
 			}
 			else {
 				//컨트롤에 입력받은 값 가져와서 insert 수행
 				GetWindowText(hFamName, tempFam.name, 255);
 				GetWindowText(hFamAge, tempFam.age, 5);
-				for (i = 0; i < ListView_GetItemCount(hFamilyLV); i++) {
-					ListView_GetItemText(hFamilyLV, i, 3, str, 255);
-					if ((lstrcmp(tempFam.relation, famRelation[0]) == 0 || lstrcmp(tempFam.relation, famRelation[1]) == 0 ||
-						lstrcmp(tempFam.relation, famRelation[2]) == 2 || lstrcmp(tempFam.relation, famRelation[3]) == 3 ||
-						lstrcmp(tempFam.relation, famRelation[4]) == 4) && lstrcmp(tempFam.relation, str) == 0) {
-						MessageBox(hWnd, TEXT("관계설정오류"), NULL, MB_OK);
-						SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
-						lstrcpy(tempFam.relation, TEXT(""));
-						break;
+				SendMessage(hFamRel, CB_GETLBTEXT, SendMessage(hFamRel, CB_GETCURSEL, 0, 0), (LPARAM)tempFam.relation);
+				SendMessage(hFamJob, CB_GETLBTEXT, SendMessage(hFamJob, CB_GETCURSEL, 0, 0), (LPARAM)tempFam.job);
+				if (lstrlen(tempFam.name) == 0 || lstrlen(tempFam.age) == 0 || lstrlen(tempFam.relation) == 0 || lstrlen(tempFam.job) == 0) {
+					MessageBox(hWnd, TEXT("삽입정보오류"), NULL, MB_OK);
+				}
+				else {
+					for (i = 0; i < ListView_GetItemCount(hFamilyLV); i++) {
+						ListView_GetItemText(hFamilyLV, i, 0, str, 255);
+						if (lstrcmp(tempFam.name, str) == 0) {
+							MessageBox(hWnd, TEXT("이름이 동일한 가족은 추가할 수 없습니다."), NULL, MB_OK);
+							SetWindowText(hFamName,TEXT(""));
+							lstrcpy(tempFam.name, TEXT(""));
+							break;
+						}
+					}
+					for (i = 0; i < ListView_GetItemCount(hFamilyLV); i++) {
+						ListView_GetItemText(hFamilyLV, i, 2, str, 255);
+						if ((lstrcmp(tempFam.relation, famRelation[0]) == 0 || lstrcmp(tempFam.relation, famRelation[1]) == 0 ||
+							lstrcmp(tempFam.relation, famRelation[2]) == 0 || lstrcmp(tempFam.relation, famRelation[3]) == 0 ||
+							lstrcmp(tempFam.relation, famRelation[4]) == 0) && lstrcmp(tempFam.relation, str) == 0) {
+							MessageBox(hWnd, TEXT("관계설정오류"), NULL, MB_OK);
+							SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
+							lstrcpy(tempFam.relation, TEXT(""));
+							break;
+						}
+					}
+					if (lstrlen(tempFam.relation)&&lstrlen(tempFam.name)) {
+						DBConnect();
+						InsertFamily(tempFam);
+						SelectFamily(tempFam.empNo);
+						DBDisconnect();
 					}
 				}
-				if (lstrlen(tempFam.relation)) {
-					LI.mask = LVIF_TEXT;
-					LI.iItem = ListView_GetItemCount(hFamilyLV);
-					LI.iSubItem = 0;
-					LI.pszText = tempFam.empNo;
-					ListView_InsertItem(hFamilyLV, &LI);
-					ListView_SetItemText(hFamilyLV, ListView_GetItemCount(hFamilyLV) - 1, 1, (LPSTR)tempFam.name);
-					ListView_SetItemText(hFamilyLV, ListView_GetItemCount(hFamilyLV) - 1, 2, (LPSTR)tempFam.age);
-					ListView_SetItemText(hFamilyLV, ListView_GetItemCount(hFamilyLV) - 1, 3, (LPSTR)tempFam.relation);
-					ListView_SetItemText(hFamilyLV, ListView_GetItemCount(hFamilyLV) - 1, 4, (LPSTR)tempFam.job);
-				}
 			}
+			//입력 컨트롤 초기화
 			SetWindowText(hFamName, TEXT(""));
 			SetWindowText(hFamAge, TEXT(""));
 			SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
@@ -204,32 +192,40 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				MessageBox(hWnd, TEXT("수정 항목을 먼저 선택하십시오"), TEXT("알림"), MB_OK);
 			}
 			else {
+				//컨트롤의 값들 임시구조체 tempFam에 담음
+				GetWindowText(hFamEmpno, tempFam.empNo, 20);
 				GetWindowText(hFamName, tempFam.name, 255);
 				GetWindowText(hFamAge, tempFam.age, 5);
-				GetWindowText(hFamJob, tempFam.job, 255);
-				GetWindowText(hFamRel, tempFam.relation, 255);
-				/*
-				가족사항에서 수정할때 겹치는 관계있는지 확인후 수정
-				*/
+				SendMessage(hFamRel, CB_GETLBTEXT, SendMessage(hFamRel, CB_GETCURSEL, 0, 0), (LPARAM)tempFam.relation);
+				SendMessage(hFamJob, CB_GETLBTEXT, SendMessage(hFamJob, CB_GETCURSEL, 0, 0), (LPARAM)tempFam.job);
+				//가족사항에서 수정할때 관계유효성 확인후 수정
+
 				if ((lstrcmp(tempFam.relation, famRelation[0]) == 0 || lstrcmp(tempFam.relation, famRelation[1]) == 0 ||
-					lstrcmp(tempFam.relation, famRelation[2]) == 2 || lstrcmp(tempFam.relation, famRelation[3]) == 3 ||
-					lstrcmp(tempFam.relation, famRelation[4]) == 4)) {
+					lstrcmp(tempFam.relation, famRelation[2]) == 0 || lstrcmp(tempFam.relation, famRelation[3]) == 0 ||
+					lstrcmp(tempFam.relation, famRelation[4]) == 0)) {
 					for (j = 0; j < ListView_GetItemCount(hFamilyLV); j++) {
-						ListView_GetItemText(hFamilyLV, j, 3, str, 255);
+						ListView_GetItemText(hFamilyLV, j, 2, str, 255);
 						if (i != j && lstrcmp(str, tempFam.relation) == 0) {
 							MessageBox(hWnd, TEXT("관계설정오류"), NULL, MB_OK);
+							lstrcpy(tempFam.relation, "");
 							break;
 						}
 					}
-					if (j != ListView_GetItemCount(hFamilyLV)) {
-						break;
-					}
 				}
+				//모든 입력값이 유효하다면 해당 index의 가족정보 update
+				if (lstrlen(tempFam.relation) != 0) {
+					ListView_GetItemText(hFamilyLV, i, 0, str, 50);
 
-				ListView_SetItemText(hFamilyLV, i, 1, (LPSTR)tempFam.name);
-				ListView_SetItemText(hFamilyLV, i, 2, (LPSTR)tempFam.age);
-				ListView_SetItemText(hFamilyLV, i, 3, (LPSTR)tempFam.relation);
-				ListView_SetItemText(hFamilyLV, i, 4, (LPSTR)tempFam.job);
+					DBConnect();
+					UpdateFamily(GetFamilyIndex(tempFam.empNo, str), tempFam);
+					SelectFamily(tempFam.empNo);
+					DBDisconnect();
+					//입력 컨트롤 빈칸으로 초기화
+					SetWindowText(hFamName, TEXT(""));
+					SetWindowText(hFamAge, TEXT(""));
+					SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
+					SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
+				}
 			}
 			break;
 		case ID_FAMDELETE:		//삭제버튼
@@ -238,7 +234,19 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				MessageBox(hWnd, TEXT("삭제 항목을 먼저 선택하십시오"), TEXT("알림"), MB_OK);
 			}
 			else {
-				ListView_DeleteItem(hFamilyLV, i);
+				//사원번호와 이름을 컨트롤에서 가져와서 지울 가족정보 특정
+				GetWindowText(hFamEmpno, tempFam.empNo, 20);
+				GetWindowText(hFamName, tempFam.name, 255);
+				ListView_GetItemText(hFamilyLV, i, 0, str, 50);
+				DBConnect();
+				DeleteFamily(GetFamilyIndex(tempFam.empNo, str));
+				SelectFamily(tempFam.empNo);
+				DBDisconnect();
+				//입력 컨트롤 빈칸으로 초기화
+				SetWindowText(hFamName, TEXT(""));
+				SetWindowText(hFamAge, TEXT(""));
+				SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
+				SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
 			}
 			break;
 		case ID_COMPLETE:		//완료버튼
@@ -276,7 +284,7 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 					totFamily++;
 				}
 				ListView_DeleteAllItems(hFamilyLV);
-				//컨트롤 초기화
+				//입력 컨트롤 초기화
 				SetWindowText(hEmpName, TEXT(""));
 				SetWindowText(hFamName, TEXT(""));
 				SetWindowText(hFamAge, TEXT(""));
@@ -306,26 +314,28 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				if (nlv->uChanged == LVIF_STATE && nlv->uNewState == (LVIS_SELECTED | LVIS_FOCUSED)) {
 					ListView_GetItemText(hEmpLV, nlv->iItem, 3, str, 12);
 					ListView_GetItemText(hEmpLV, nlv->iItem, 0, tempFam.empNo, 255);
+
 					//static컨트롤에 이름,사번뿌려서 보여주기
 					SetWindowText(hEmpName, str);
-					SetWindowText(hFamEmpno, str);
-					ListView_DeleteAllItems(hFamilyLV);
-					//가족사항리스트뷰에 사원가족정보 뿌리기
-					for (i = 0, j = 0; i < totFamily; i++) {
-						if (lstrcmp(tempFam.empNo, family[i].empNo) == 0) {
-							LI.mask = LVIF_TEXT;
-							LI.iItem = j;
-							LI.iSubItem = 0;
-							LI.pszText = family[i].empNo;
-							ListView_InsertItem(hFamilyLV, &LI);								//사원
-							ListView_SetItemText(hFamilyLV, j, 1, (LPSTR)family[i].name);		//이름
-							ListView_SetItemText(hFamilyLV, j, 2, (LPSTR)family[i].age);		//나이
-							ListView_SetItemText(hFamilyLV, j, 3, (LPSTR)family[i].relation);	//관계
-							ListView_SetItemText(hFamilyLV, j, 4, (LPSTR)family[i].job);		//직업
-							j++;
-						}
-					}
+					SetWindowText(hFamEmpno, tempFam.empNo);
 
+					//가족사항리스트뷰에 사원가족정보 뿌리기
+					DBConnect();
+					SelectFamily((LPSTR)tempFam.empNo);
+					DBDisconnect();
+
+					//입력 컨트롤 초기화
+					SetWindowText(hFamName, TEXT(""));
+					SetWindowText(hFamAge, TEXT(""));
+					SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
+					SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
+
+					//임시가족 구조체 초기화
+					lstrcpy(tempFam.empNo, TEXT(""));
+					lstrcpy(tempFam.age, TEXT(""));
+					lstrcpy(tempFam.job, TEXT(""));
+					lstrcpy(tempFam.name, TEXT(""));
+					lstrcpy(tempFam.relation, TEXT(""));
 				}
 				return TRUE;
 			}
@@ -334,24 +344,15 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 			switch (hdr->code) {
 			case LVN_ITEMCHANGED:
 				if (nlv->uChanged == LVIF_STATE && nlv->uNewState == (LVIS_SELECTED | LVIS_FOCUSED)) {
-					ListView_GetItemText(hFamilyLV, nlv->iItem, 1, str, 255);
+					//LV에서 선택한 내용을 입력 컨트롤에 뿌리기
+					ListView_GetItemText(hFamilyLV, nlv->iItem, 0, str, 255);
 					SetWindowText(hFamName, str);
-					ListView_GetItemText(hFamilyLV, nlv->iItem, 2, str, 5);
+					ListView_GetItemText(hFamilyLV, nlv->iItem, 1, str, 5);
 					SetWindowText(hFamAge, str);
+					ListView_GetItemText(hFamilyLV, nlv->iItem, 2, str, 255);
+					SendMessage(hFamRel, CB_SETCURSEL, SendMessage(hFamRel, CB_FINDSTRINGEXACT, -1, (LPARAM)str), 0);
 					ListView_GetItemText(hFamilyLV, nlv->iItem, 3, str, 255);
-					for (i = 0; i < 8; i++) {
-						if (lstrcmp(str, (LPCSTR)famRelation[i]) == 0) {
-							SendMessage(hFamRel, CB_SETCURSEL, i, 0);
-							break;
-						}
-					}
-					ListView_GetItemText(hFamilyLV, nlv->iItem, 4, str, 255);
-					for (i = 0; i < 6; i++) {
-						if (lstrcmp(str, (LPCSTR)famJob[i]) == 0) {
-							SendMessage(hFamJob, CB_SETCURSEL, i, 0);
-							break;
-						}
-					}
+					SendMessage(hFamJob, CB_SETCURSEL, SendMessage(hFamJob, CB_FINDSTRINGEXACT, -1, (LPARAM)str), 0);
 				}
 				return TRUE;
 			}
@@ -366,8 +367,8 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		TextOut(hdc, 760, 30, TEXT("님 가족"), lstrlen(TEXT("님 가족")));
 		TextOut(hdc, 870, 30, TEXT("사번"), lstrlen(TEXT("사번")));
 		TextOut(hdc, 490, 80, TEXT("이름"), lstrlen(TEXT("이름")));
-		TextOut(hdc, 490, 120, TEXT("관계"), lstrlen(TEXT("관계")));
-		TextOut(hdc, 490, 160, TEXT("나이"), lstrlen(TEXT("나이")));
+		TextOut(hdc, 490, 120, TEXT("나이"), lstrlen(TEXT("나이")));
+		TextOut(hdc, 490, 160, TEXT("관계"), lstrlen(TEXT("관계")));
 		TextOut(hdc, 490, 200, TEXT("직업"), lstrlen(TEXT("직업")));
 		DeleteObject(hFont);
 		EndPaint(hWnd, &ps);

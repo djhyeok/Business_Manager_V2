@@ -1,10 +1,6 @@
 #include "Family.h"
 
 extern HINSTANCE g_hInst;
-extern int totEmp;			//사원수
-extern EMP* workEmp;		//사원
-extern FAMILY* family;		//사원가족
-extern int totFamily;		//전체사원가족수
 HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert, hFamEmpno, hEmpno, hFindBtn;
 enum {
 	ID_EMPLV, ID_FAMLV, ID_EMPNAME, ID_FAMNAME, ID_FAMAGE, ID_FAMREL, ID_FAMJOB,

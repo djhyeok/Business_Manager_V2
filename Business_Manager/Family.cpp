@@ -126,8 +126,8 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		CreateWindow(TEXT("button"), TEXT("삭제"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			600, 235, 50, 25, hWnd, (HMENU)ID_FAMDELETE, g_hInst, NULL);
 		//부양가족없음 버튼
-		CreateWindow(TEXT("button"), TEXT("완료"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			1030, 530, 70, 30, hWnd, (HMENU)ID_COMPLETE, g_hInst, NULL);
+		CreateWindow(TEXT("button"), TEXT("다시입력"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			490, 265, 160, 25, hWnd, (HMENU)ID_COMPLETE, g_hInst, NULL);
 
 		//리스트뷰에 사원정보 채우기
 		//사원번호,직책,부서,이름
@@ -249,56 +249,13 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 				SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
 			}
 			break;
-		case ID_COMPLETE:		//완료버튼
-			i = ListView_GetNextItem(hEmpLV, -1, LVNI_ALL | LVNI_SELECTED);
-			if (i == -1) {
-				MessageBox(hWnd, TEXT("사원을 먼저 선택하십시오"), TEXT("알림"), MB_OK);
-			}
-			else {
-				ListView_GetItemText(hFamilyLV, i, 0, tempFam.empNo, 255);
-				//해당 사원번호를 가진 가족사항 건수 count
-				for (i = 0, j = 0; i < totFamily; i++) {
-					if (lstrcmp(family[i].empNo, tempFam.empNo) == 0) {
-						j++;
-					}
-				}
-				//해당 가족사항들 일괄 삭제후 당김
-				for (i = 0; i < totFamily - j - 1; i++) {
-					if (lstrcmp(family[i].empNo, tempFam.empNo) == 0) {
-						family[i] = family[i + j];
-					}
-				}
-				//총 가족수 조정 후 재할당
-				totFamily -= j;
-				family = (FAMILY*)realloc(family, sizeof(FAMILY) * totFamily);
-
-				for (i = 0; i < ListView_GetItemCount(hFamilyLV); i++) {
-					//임시구조체에 정보 대입
-					ListView_GetItemText(hFamilyLV, i, 1, tempFam.name, 255);
-					ListView_GetItemText(hFamilyLV, i, 2, tempFam.age, 5);
-					ListView_GetItemText(hFamilyLV, i, 3, tempFam.relation, 255);
-					ListView_GetItemText(hFamilyLV, i, 4, tempFam.job, 255);
-
-					family = (FAMILY*)realloc(family, (totFamily + 1) * sizeof(FAMILY));
-					family[totFamily] = tempFam;
-					totFamily++;
-				}
-				ListView_DeleteAllItems(hFamilyLV);
-				//입력 컨트롤 초기화
-				SetWindowText(hEmpName, TEXT(""));
-				SetWindowText(hFamName, TEXT(""));
-				SetWindowText(hFamAge, TEXT(""));
-				SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
-				SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
-
-				//임시가족 구조체 초기화
-				lstrcpy(tempFam.empNo, TEXT(""));
-				lstrcpy(tempFam.age, TEXT(""));
-				lstrcpy(tempFam.job, TEXT(""));
-				lstrcpy(tempFam.name, TEXT(""));
-				lstrcpy(tempFam.relation, TEXT(""));
-				break;
-			}
+		case ID_COMPLETE:		//다시입력버튼
+			//입력 컨트롤 빈칸으로 초기화
+			SetWindowText(hFamName, TEXT(""));
+			SetWindowText(hFamAge, TEXT(""));
+			SendMessage(hFamJob, CB_SETCURSEL, (WPARAM)-1, 0);
+			SendMessage(hFamRel, CB_SETCURSEL, (WPARAM)-1, 0);
+			break;
 		}
 		return 0;
 	case WM_NOTIFY:

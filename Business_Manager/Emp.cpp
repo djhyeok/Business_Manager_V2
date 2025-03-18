@@ -69,8 +69,8 @@ LRESULT CALLBACK InitEMPMDIProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM 
 			else {
 				tempEmp.pInfo.pFamily = FALSE;													//미혼
 			}
-			GetWindowText(hEmpLefteye, tempEmp.pInfo.pPhysical[2], 11);			//시력(좌)
-			GetWindowText(hEmpRighteye, tempEmp.pInfo.pPhysical[3], 11);		//시력(우)
+			GetWindowText(hEmpLefteye, tempEmp.pInfo.pPhysical[2], 11);							//시력(좌)
+			GetWindowText(hEmpRighteye, tempEmp.pInfo.pPhysical[3], 11);						//시력(우)
 			DBConnect();
 			num = CountRecord((LPSTR)"EMP");
 			SendMessage(hEmpBuseo, CB_GETLBTEXT, SendMessage(hEmpBuseo, CB_GETCURSEL, 0, 0), (LPARAM)tempEmp.empBuseo);					//부서

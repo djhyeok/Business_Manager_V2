@@ -137,7 +137,7 @@ LRESULT CALLBACK InitEMPFamilyMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case ID_FIND:
+		case ID_FIND:			//사번검색버튼
 			int idx;
 			LVFINDINFO fi;
 			//검색할 사번 str에 담음

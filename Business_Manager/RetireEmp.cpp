@@ -31,16 +31,18 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 	INITCOMMONCONTROLSEX icex;
 	int i, j;
 	static RETIRE tempRet;
+	TCHAR str[256];
 	TCHAR retReason[6][255] = { TEXT("정년퇴직"),TEXT("명예퇴직"),TEXT("권고사직"),TEXT("이직"),TEXT("희망퇴직"),TEXT("기타") };
 
 	switch (iMessage) {
 	case WM_CREATE:
 		InitCommonControlsEx(&icex);
 
-		tempRet.retireReason = -1;
 		//리스트뷰 생성
 		hRetReqEMPList = CreateWindow(WC_LISTVIEW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SHOWSELALWAYS, 100, 60, 340, 500, hWnd, (HMENU)ID_RETREQEMPLIST, g_hInst, NULL);
 		hRetEMPList = CreateWindow(WC_LISTVIEW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SHOWSELALWAYS, 600, 60, 600, 500, hWnd, (HMENU)ID_RETEMPLIST, g_hInst, NULL);
+		ListView_SetExtendedListViewStyle(hRetReqEMPList, LVS_EX_FULLROWSELECT);
+		ListView_SetExtendedListViewStyle(hRetEMPList, LVS_EX_FULLROWSELECT);
 
 		//퇴직요청 리스트뷰에 헤더추가
 		COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -131,109 +133,54 @@ LRESULT CALLBACK InitRetireEMPMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, L
 
 		//리스트뷰에 사원정보 채우기
 		//사원번호,직책,부서,이름
-		for (i = 0, j = 0; i < totEmp; i++) {
-			if (workEmp[i].empRetire == 1) {
-				LI.mask = LVIF_TEXT;
-				LI.iItem = j;
-				LI.iSubItem = 0;
-				LI.pszText = workEmp[i].empNo;
-				ListView_InsertItem(hRetReqEMPList, &LI);
-				ListView_SetItemText(hRetReqEMPList, j, 1, (LPSTR)workEmp[i].empBuseo);	//부서
-				ListView_SetItemText(hRetReqEMPList, j, 2, (LPSTR)workEmp[i].empPosCode);//직책
-				ListView_SetItemText(hRetReqEMPList, j, 3, (LPSTR)workEmp[i].pInfo.pName[0]);//한글이름
-				j++;
-			}
-		}
+		DBConnect();
+		SelectReqEMP();
+		DBDisconnect();
 		//퇴직완료리스트뷰
-		for (i = 0; i < totRetEmp; i++) {
-			LI.mask = LVIF_TEXT;
-			LI.iItem = i;
-			LI.iSubItem = 0;
-			LI.pszText = retireEmp[i].empNo;
-			ListView_InsertItem(hRetEMPList, &LI);												//사원번호
-			ListView_SetItemText(hRetEMPList, j, 1, (LPSTR)retireEmp[i].empBuseo);				//부서
-			ListView_SetItemText(hRetEMPList, j, 2, (LPSTR)retireEmp[i].empPoscode);			//직책
-			ListView_SetItemText(hRetEMPList, j, 3, (LPSTR)retireEmp[i].empName);				//이름
-			ListView_SetItemText(hRetEMPList, j, 4, (LPSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
-			ListView_SetItemText(hRetEMPList, j, 5, (LPSTR)retireEmp[i].empPhone);				//연락처
-		}
+		DBConnect();
+		SelectRetEMP();
+		DBDisconnect();
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case ID_RETBUSEO:		//퇴직부서 콤보박스
-			//부서 콤보박스의 값 임시 구조체tempRet에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				i = SendMessage(hRetEmpBuseo, CB_GETCURSEL, 0, 0);
-				SendMessage(hRetEmpBuseo, CB_GETLBTEXT, i, (LPARAM)tempRet.empBuseo);
-				break;
-			}
-			break;
-		case ID_RETREASON:		//퇴직사유 콤보박스
-			//퇴직사유 콤보박스의 값 임시 구조체tempRet에 담음
-			switch (HIWORD(wParam)) {
-			case CBN_SELCHANGE:
-				tempRet.retireReason = SendMessage(hRetEmpReason, CB_GETCURSEL, 0, 0);
-				break;
-			}
-			break;
 		case IDC_RETBUTTON:		//퇴직처리버튼
-			GetWindowText(hRetReqEmpPhone, tempRet.empPhone, 14);		//연락처 edit의 값을 tempRet.empPhone에 대입
-			//연락처와 command에서 받은 부서,사유가 유효한가
-			if (lstrlen(tempRet.empBuseo) && lstrlen(tempRet.empPhone) && tempRet.retireReason != -1) {
-				//tempRet로 값 복사
-				GetWindowText(hRetEmpNo, tempRet.empNo, 12);				//사원번호
-				GetWindowText(hRetEmpName1, tempRet.empName, 255);		//이름
-				GetWindowText(hRetEmpPoscode, tempRet.empPoscode, 255);	//직책
-				for (i = 0; i < totEmp; i++) {
-					if (lstrcmp(tempRet.empNo, workEmp[i].empNo) == 0) {
-						workEmp[i].empRetire = 2;
-						break;
-					}
-				}
-				retireEmp = (RETIRE*)realloc(retireEmp, (totRetEmp + 1) * sizeof(RETIRE));
-				retireEmp[totRetEmp] = tempRet;
-				totRetEmp++;
-				SetWindowText(hRetEmpNo, TEXT(""));
-				SetWindowText(hRetEmpBuseo, TEXT(""));
-				SetWindowText(hRetEmpPoscode, TEXT(""));
-				SetWindowText(hRetEmpName1, TEXT(""));
-				SetWindowText(hRetReqEmpPhone, TEXT(""));
-				SendMessage(hRetReqEMPBuseo, CB_SETCURSEL, (WPARAM)-1, 0);
-				SendMessage(hRetEmpReason, CB_SETCURSEL, (WPARAM)-1, 0);
+			GetWindowText(hRetEmpNo, str, 200);
+			if (lstrlen(str)) {
+				//퇴직당시 부서,연락처,퇴직사유 정보 tempRet 임시 구조체에 담기
+				
+				SendMessage(hRetReqEMPBuseo, CB_GETLBTEXT, SendMessage(hRetReqEMPBuseo, CB_GETCURSEL, 0, 0), (LPARAM)tempRet.empBuseo);
+				GetWindowText(hRetReqEmpPhone, tempRet.empPhone, 14);
+				SendMessage(hRetEmpReason, CB_GETLBTEXT, SendMessage(hRetEmpReason, CB_GETCURSEL, 0, 0), (LPARAM)tempRet.retireReason);
+				//부서,연락처,사유를 입력했다면 퇴직처리
+				if (lstrlen(tempRet.empBuseo) && lstrlen(tempRet.empPhone) && lstrlen(tempRet.retireReason)) {
+					//tempRet로 값 복사
+					GetWindowText(hRetEmpNo, tempRet.empNo, 12);			//사원번호
+					GetWindowText(hRetEmpName1, tempRet.empName, 255);		//이름
+					GetWindowText(hRetEmpPoscode, tempRet.empPoscode, 255);	//직책
+					//DB에 EMP테이블에서 해당 사원정보 퇴직정보를 2로 변경하고 RETIREINFO 테이블에 퇴직자 정보 INSERT
+					DBConnect();
+					lstrcpy(tempRet.empBuseo, Name2Code((LPSTR)"BUSEO", tempRet.empBuseo));
+					lstrcpy(tempRet.empPoscode, Name2Code((LPSTR)"POSITION", tempRet.empPoscode));
+					RetireEMP(tempRet);
+					SelectReqEMP();
+					SelectRetEMP();
+					DBDisconnect();
 
-				//두 리스트뷰 새로고침
-				ListView_DeleteAllItems(hRetReqEMPList);
-				for (i = 0, j = 0; i < totEmp; i++) {
-					if (workEmp[i].empRetire == 1) {
-						LI.mask = LVIF_TEXT;
-						LI.iItem = j;
-						LI.iSubItem = 0;
-						LI.pszText = workEmp[i].empNo;
-						ListView_InsertItem(hRetReqEMPList, &LI);
-						ListView_SetItemText(hRetReqEMPList, j, 1, (LPSTR)workEmp[i].empBuseo);		//부서
-						ListView_SetItemText(hRetReqEMPList, j, 2, (LPSTR)workEmp[i].empPosCode);		//직책
-						ListView_SetItemText(hRetReqEMPList, j, 3, (LPSTR)workEmp[i].pInfo.pName[0]);	//한글이름
-						j++;
-					}
+					SetWindowText(hRetEmpNo, TEXT(""));
+					SetWindowText(hRetEmpBuseo, TEXT(""));
+					SetWindowText(hRetEmpPoscode, TEXT(""));
+					SetWindowText(hRetEmpName1, TEXT(""));
+					SetWindowText(hRetReqEmpPhone, TEXT(""));
+					SendMessage(hRetReqEMPBuseo, CB_SETCURSEL, (WPARAM)-1, 0);
+					SendMessage(hRetEmpReason, CB_SETCURSEL, (WPARAM)-1, 0);
+
 				}
-				ListView_DeleteAllItems(hRetEMPList);
-				for (i = 0; i < totRetEmp; i++) {
-					LI.mask = LVIF_TEXT;
-					LI.iItem = i;
-					LI.iSubItem = 0;
-					LI.pszText = retireEmp[i].empNo;
-					ListView_InsertItem(hRetEMPList, &LI);												//사원번호
-					ListView_SetItemText(hRetEMPList, j, 1, (LPSTR)retireEmp[i].empBuseo);				//부서
-					ListView_SetItemText(hRetEMPList, j, 2, (LPSTR)retireEmp[i].empPoscode);			//직책
-					ListView_SetItemText(hRetEMPList, j, 3, (LPSTR)retireEmp[i].empName);				//이름
-					ListView_SetItemText(hRetEMPList, j, 4, (LPSTR)retReason[retireEmp[i].retireReason]);	//퇴직사유
-					ListView_SetItemText(hRetEMPList, j, 5, (LPSTR)retireEmp[i].empPhone);				//연락처
+				else {
+					MessageBox(hWnd, TEXT("정보입력오류입니다."), NULL, MB_OK);
 				}
-				tempRet.retireReason = -1;
 			}
 			else {
-				MessageBox(hWnd, TEXT("정보입력오류입니다."), NULL, MB_OK);
+				MessageBox(hWnd, TEXT("먼저 퇴직요청자를 선택하세요."), NULL, MB_OK);
 			}
 			break;
 		}

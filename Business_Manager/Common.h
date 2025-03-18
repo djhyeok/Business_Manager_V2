@@ -85,20 +85,20 @@ typedef struct retireInfo {
 	TCHAR empPoscode[255];	//퇴직 당시 직책
 	TCHAR empName[255];		//퇴직자명
 	TCHAR empPhone[14];		//비상연락처
-	int retireReason;		//퇴직사유
+	TCHAR retireReason[20];		//퇴직사유
 } RETIRE;
 typedef struct retireInfoDB {
 	TCHAR empNo[12];
 	SQLLEN IempNo;
 	TCHAR empBuseo[255];
 	SQLLEN IempBuseo;
-	TCHAR empPoscode;
+	TCHAR empPoscode[3];
 	SQLLEN IempPoscode;
 	TCHAR empName[255];
 	SQLLEN IempName;
 	TCHAR empPhone[14];
 	SQLLEN IempPhone;
-	SQLLEN retireReason;
+	TCHAR retireReason[20];
 	SQLLEN IretireReason;
 } RETIREDB;
 

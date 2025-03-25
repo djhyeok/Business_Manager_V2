@@ -1,8 +1,6 @@
 #include "FamilyHelper.h"
 //extern 걸어서 다른 파일에서 선언된 전역변수 가져옴
 extern HINSTANCE g_hInst;
-extern SQLHENV hEnv;
-extern SQLHDBC hDbc;
 extern SQLHSTMT hStmt;
 extern HWND hEmpLV, hFamilyLV, hEmpName, hFamName, hFamAge, hFamRel, hFamJob, hFamInsert, hFamEmpno, hEmpno, hFindBtn;
 

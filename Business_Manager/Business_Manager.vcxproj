@@ -139,6 +139,7 @@
     <ClCompile Include="Frame.h" />
     <ClCompile Include="Emp.cpp" />
     <ClCompile Include="Report.cpp" />
+    <ClCompile Include="ReportHelper.cpp" />
     <ClCompile Include="RetireEmp.cpp" />
     <ClCompile Include="RetireHelper.cpp" />
   </ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="Family.h" />
     <ClInclude Include="FamilyHelper.h" />
     <ClInclude Include="Report.h" />
+    <ClInclude Include="ReportHelper.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RetireEmp.h" />
     <ClInclude Include="RetireHelper.h" />

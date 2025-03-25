@@ -249,6 +249,7 @@ BOOL InitControl(HWND* hWnd) {
 	//새로고침버튼생성
 	CreateWindow(TEXT("button"), TEXT("새로고침"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 130, 720, 180, 25, *hWnd, (HMENU)IDC_REFRESH, g_hInst, NULL);
 
+	return TRUE;
 }
 /*
 BOOL EMPSelectSQL() : DB에서 EMPVIEW 조회한 후 hEMPList 리스트뷰에 값들 뿌림

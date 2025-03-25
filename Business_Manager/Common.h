@@ -92,7 +92,7 @@ typedef struct retireInfoDB {
 	SQLLEN IempNo;
 	TCHAR empBuseo[255];
 	SQLLEN IempBuseo;
-	TCHAR empPoscode[3];
+	TCHAR empPoscode[20];
 	SQLLEN IempPoscode;
 	TCHAR empName[255];
 	SQLLEN IempName;

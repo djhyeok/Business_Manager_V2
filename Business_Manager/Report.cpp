@@ -1,8 +1,6 @@
 #include "Report.h"
 
 extern HINSTANCE g_hInst;
-extern int totEmp;
-extern EMP* workEmp;
 
 HWND hReportEmpLV, hReportFamilyLV, hReportRetireLV, hSearchOption, hSearch, hSearchBtn, hSelectBuseo, hSelectPos
 , hMaleCheck, hFemaleCheck, hWorkCheck, hRetireCheck, hRetireReqCheck, hRefreshBtn;
@@ -301,9 +299,7 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 				lstrcpy(tempEmp.empBuseo, "");
 			}
 			else {
-				DBConnect();
 				SendMessage(hSelectBuseo, CB_GETLBTEXT, i, (LPARAM)tempEmp.empBuseo);
-				DBDisconnect();
 			}
 
 			i = SendMessage(hSelectPos, CB_GETCURSEL, 0, 0);
@@ -311,9 +307,7 @@ LRESULT CALLBACK InitReportMDIPROC(HWND hWnd, UINT iMessage, WPARAM wParam, LPAR
 				lstrcpy(tempEmp.empPosCode, "");
 			}
 			else {
-				DBConnect();
 				SendMessage(hSelectPos, CB_GETLBTEXT, i, (LPARAM)tempEmp.empPosCode);
-				DBDisconnect();
 			}
 
 			if (SendMessage(hMaleCheck, BM_GETCHECK, 0, 0) == BST_CHECKED) {

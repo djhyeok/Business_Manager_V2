@@ -3,11 +3,8 @@
 extern SQLHENV hEnv;
 extern SQLHDBC hDbc;
 extern SQLHSTMT hStmt;
-extern EMP* workEmp;		//사원
-extern RETIRE* retireEmp;	//퇴직완료사원
-extern FAMILY* family;		//사원가족
 /*
-BOOL DBConnect(): DB연결 함수
+BOOL DBConnect(): DB연결
 */
 BOOL DBConnect() {
 	//연결 설정을 위한 변수들

@@ -10,9 +10,6 @@ extern int totR;			//종교갯수
 extern BASE* buseo;			//부서
 extern BASE* position;		//직위
 extern BASE* religion;		//종교
-extern EMP* workEmp;		//사원
-extern RETIRE* retireEmp;	//퇴직완료사원
-extern FAMILY* family;		//사원가족
 
 LRESULT CALLBACK MDIWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	CLIENTCREATESTRUCT ccs;
@@ -38,12 +35,6 @@ LRESULT CALLBACK MDIWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPar
 		BaseSelectSQL((LPSTR)"POSITION");
 
 		DBDisconnect();
-
-		//초기에 1개 사이즈로 할당
-		workEmp = (EMP*)malloc(sizeof(EMP));
-		retireEmp = (RETIRE*)malloc(sizeof(RETIRE));
-		family = (FAMILY*)malloc(sizeof(FAMILY));
-
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
@@ -119,8 +110,6 @@ LRESULT CALLBACK MDIWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPar
 		free(buseo);
 		free(position);
 		free(religion);
-		free(workEmp);
-		free(retireEmp);
 
 		return 0;
 	}

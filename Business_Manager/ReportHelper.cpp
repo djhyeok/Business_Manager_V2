@@ -114,7 +114,7 @@ BOOL SelectReport(LPSTR str, EMP tEmp) {
 		else {
 			lstrcat(Q, " AND ");
 		}
-		wsprintf(temp, "NAME LIKE '%%s%'", tEmp.pInfo.pName[0]);
+		wsprintf(temp, "NAME1 LIKE '%%%s%%'", tEmp.pInfo.pName[0]);
 		lstrcat(Q, temp);
 	}
 	//SQL문을 실행한다.

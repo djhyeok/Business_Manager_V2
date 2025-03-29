@@ -1,7 +1,5 @@
 #include "RetireEmp.h"
-/*
-모든 데이터처리를 DB에서 함 구조체로 관리하지 않음
-*/
+
 extern HINSTANCE g_hInst;
 extern int totB;			//부서갯수
 extern int totP;			//직위갯수
@@ -11,8 +9,6 @@ extern int totRetEmp;		//퇴직사원수
 extern BASE* buseo;			//부서
 extern BASE* position;		//직위
 extern BASE* religion;		//종교
-extern EMP* workEmp;		//사원
-extern RETIRE* retireEmp;	//퇴직사원
 
 HWND hRetEMPList, hRetEmpNo, hRetEmpBuseo, hRetEmpPoscode, hRetEmpName1, hRetEmpReason
 , hRetReqEMPList, hRetReqEMPBuseo, hRetReqEmpPhone;	//컨트롤 핸들

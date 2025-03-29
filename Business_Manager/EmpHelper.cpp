@@ -1,6 +1,6 @@
 #include "EmpHelper.h"
 
-//extern 걸어서 다른 파일에서 선언된 전역변수 가져옴
+//extern으로 다른 파일에서 선언된 전역변수 가져옴
 extern HINSTANCE g_hInst;
 extern SQLHENV hEnv;
 extern SQLHDBC hDbc;
@@ -12,6 +12,7 @@ enum {
 	ID_EMPLIST = 1, ID_EMPNO, ID_BUSEO, ID_POSCODE, ID_INDATE, ID_NAME1, ID_NAME2, ID_NAME3, ID_MALE, ID_FEMALE, ID_BIRTH, ID_ADDRESS, ID_EMAIL,
 	ID_PHONE1, ID_PHONE2, ID_HEIGHT, ID_WEIGHT, ID_LEFTEYE, ID_RIGHTEYE, ID_SINGLE, ID_MARRIAGE, ID_RELLIGION, IDC_RETIRE, IDC_INSERT, IDC_MODIFY, IDC_REFRESH
 };
+
 /*
 BOOL InitControl(HWND hWnd) : 컨트롤 생성 및 초기설정
 */
@@ -503,7 +504,7 @@ BOOL EMPInsertSQL(EMP addData) {
 }
 
 /*
-BOOL EMPRetire(LPSTR);
+BOOL EMPRetire(LPSTR empno) :사번이 empno인 사원의 퇴직정보를 1로 바꿈
 */
 BOOL EMPRetire(LPSTR empno) {
 	TCHAR Q[512];

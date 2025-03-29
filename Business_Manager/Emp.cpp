@@ -8,8 +8,6 @@ extern HINSTANCE g_hInst;
 extern int totB;			//부서갯수
 extern int totP;			//직위갯수
 extern int totR;			//종교갯수
-extern int totEmp;			//사원수
-extern EMP* workEmp;		//사원
 extern BASE* buseo;			//부서
 extern BASE* position;		//직위
 extern BASE* religion;		//종교
